@@ -1,0 +1,91 @@
+use std::io::{self, Read};
+
+fn read_stdin() -> Result<String, io::Error> {
+    let mut buffer = String::new();
+    io::stdin().read_to_string(&mut buffer)?;
+    Ok(buffer)
+}
+
+fn shortest_length(mut polymer: Vec<char>) -> usize {
+    loop {
+        let mut i = 1;
+        let mut length = polymer.len() - 1;
+        let prev_length = length;
+        while i < length {
+            let letter = polymer[i];
+            let left = polymer[i - 1];
+            let right = polymer[i + 1];
+            if letter.to_string() == letter.to_uppercase().to_string() {
+                if left.to_string() == letter.to_lowercase().to_string() {
+                    polymer.remove(i);
+                    polymer.remove(i - 1);
+                    length -= 2;
+                }
+                else if right.to_string() == letter.to_lowercase().to_string() {
+                    polymer.remove(i + 1);
+                    polymer.remove(i);
+                    length -= 2;
+                }
+            }
+            else if letter.to_string() == letter.to_lowercase().to_string() {
+                if left.to_string() == letter.to_uppercase().to_string() {
+                    polymer.remove(i);
+                    polymer.remove(i - 1);
+                    length -= 2;
+                }
+                else if right.to_string() == letter.to_uppercase().to_string() {
+                    polymer.remove(i + 1);
+                    polymer.remove(i);
+                    length -= 2;
+                }
+            }
+            i += 1;
+        }
+        if length == prev_length {
+            return length;
+        }
+    }
+}
+
+fn part_one() {
+    let input = read_stdin().unwrap();
+    let mut polymer: Vec<char> = Vec::new();
+
+    for character in input.chars() {
+        polymer.push(character);
+    }
+
+    println!("{}", shortest_length(polymer));
+}
+
+
+fn part_two() {
+    let input = read_stdin().unwrap();
+    let mut polymer: Vec<char> = Vec::new();
+    
+    for character in input.chars() {
+        polymer.push(character);
+    }
+    let alphabet = (b'A' .. b'Z' + 1)
+            .map(|c| c as char)
+            .filter(|c| c.is_alphabetic())
+            .collect::<Vec<_>>();
+
+    let mut min_length = std::usize::MAX;
+    for upper in alphabet {
+        let lower = upper.to_lowercase().to_string();
+        let polymer: Vec<char> = input
+            .chars()
+            .filter(|c| c.to_string() != lower && *c != upper)
+            .collect();
+        let length = shortest_length(polymer);
+        if length < min_length {
+            min_length = length;
+        }
+    }
+    println!("{}", min_length);
+}
+
+fn main() {
+    part_two();
+}
