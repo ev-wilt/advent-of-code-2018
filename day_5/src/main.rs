@@ -6,15 +6,18 @@ fn read_stdin() -> Result<String, io::Error> {
     Ok(buffer)
 }
 
+// Finds the shortest possible length of polymer.
 fn shortest_length(mut polymer: Vec<char>) -> usize {
     loop {
         let mut i = 1;
         let mut length = polymer.len() - 1;
         let prev_length = length;
+
         while i < length {
             let letter = polymer[i];
             let left = polymer[i - 1];
             let right = polymer[i + 1];
+
             if letter == letter.to_ascii_uppercase() {
                 if left == letter.to_ascii_lowercase() {
                     polymer.remove(i);
@@ -41,6 +44,7 @@ fn shortest_length(mut polymer: Vec<char>) -> usize {
             }
             i += 1;
         }
+        // Finished once an iteration has no effect on polymer
         if length == prev_length {
             return length;
         }
@@ -71,6 +75,8 @@ fn part_two() {
             .filter(|c| c.is_alphabetic())
             .collect::<Vec<_>>();
 
+    // Iterate through each possible polymer per letter
+    // and find the minimum length
     let mut min_length = std::usize::MAX;
     for upper in alphabet {
         let lower = upper.to_ascii_lowercase();
