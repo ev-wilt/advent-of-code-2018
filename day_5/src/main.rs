@@ -15,25 +15,25 @@ fn shortest_length(mut polymer: Vec<char>) -> usize {
             let letter = polymer[i];
             let left = polymer[i - 1];
             let right = polymer[i + 1];
-            if letter.to_string() == letter.to_uppercase().to_string() {
-                if left.to_string() == letter.to_lowercase().to_string() {
+            if letter == letter.to_ascii_uppercase() {
+                if left == letter.to_ascii_lowercase() {
                     polymer.remove(i);
                     polymer.remove(i - 1);
                     length -= 2;
                 }
-                else if right.to_string() == letter.to_lowercase().to_string() {
+                else if right == letter.to_ascii_lowercase() {
                     polymer.remove(i + 1);
                     polymer.remove(i);
                     length -= 2;
                 }
             }
-            else if letter.to_string() == letter.to_lowercase().to_string() {
-                if left.to_string() == letter.to_uppercase().to_string() {
+            else if letter == letter.to_ascii_lowercase() {
+                if left == letter.to_ascii_uppercase() {
                     polymer.remove(i);
                     polymer.remove(i - 1);
                     length -= 2;
                 }
-                else if right.to_string() == letter.to_uppercase().to_string() {
+                else if right == letter.to_ascii_uppercase() {
                     polymer.remove(i + 1);
                     polymer.remove(i);
                     length -= 2;
@@ -73,10 +73,10 @@ fn part_two() {
 
     let mut min_length = std::usize::MAX;
     for upper in alphabet {
-        let lower = upper.to_lowercase().to_string();
+        let lower = upper.to_ascii_lowercase();
         let polymer: Vec<char> = input
             .chars()
-            .filter(|c| c.to_string() != lower && *c != upper)
+            .filter(|c| *c != lower && *c != upper)
             .collect();
         let length = shortest_length(polymer);
         if length < min_length {
